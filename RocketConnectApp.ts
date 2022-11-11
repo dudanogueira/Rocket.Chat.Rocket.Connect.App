@@ -46,6 +46,7 @@ export class RocketConnectAppApp extends App {
                 const messageSender = await modify
                 .getCreator()
                 .startMessage()
+                .setSender(data.user)
                 .setText(data.value as string)
 
             if (room) {
