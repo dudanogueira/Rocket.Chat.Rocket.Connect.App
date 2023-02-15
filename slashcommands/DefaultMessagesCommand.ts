@@ -1,5 +1,6 @@
 import {
     IHttp,
+    ILogger,
     IModify,
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
@@ -11,11 +12,16 @@ import {
 } from "@rocket.chat/apps-engine/definition/slashcommands";
 import { ButtonStyle } from "@rocket.chat/apps-engine/definition/uikit";
 import { AppSetting } from "../config/Settings";
+import { RocketConnectAppApp } from "../RocketConnectApp";
+import { ShowCustomMessagesModal } from "../ui/ShowCustomMessagesModal";
 export class DefaultMessagesCommand implements ISlashCommand {
+
     public command = "m"; // [1]
     public i18nParamsExample = "RocketConnect_Params";
     public i18nDescription = "RocketConnect_Description";
     public providesPreview = false;
+
+    constructor(private readonly app: RocketConnectAppApp) {}
 
     public async executor(
         context: SlashCommandContext,
@@ -24,7 +30,7 @@ export class DefaultMessagesCommand implements ISlashCommand {
         http: IHttp
     ): Promise<void> {
         // get trigger id and user
-        // const triggerId = context.getTriggerId() as string; // [1]
+        const triggerId = context.getTriggerId() as string; // [1]
         const user = context.getSender();
         const room = context.getRoom();
         // const block = modify.getCreator().getBlockBuilder();
@@ -46,7 +52,9 @@ export class DefaultMessagesCommand implements ISlashCommand {
               ).href;
         }
         const messages = await http.get(url);
-        if (messages.data) {
+        // log it
+        this.app.getLogger().info(`got mesages from ${url} for term ${subcommand} with return ${messages.data} `)
+        if (messages.data.length) {
             await this.show_all_keywords(
                 context,
                 read,
@@ -54,9 +62,11 @@ export class DefaultMessagesCommand implements ISlashCommand {
                 messages,
                 "Choose from bellow 👇"
             );
+            // show modal
+            var contextualbarBlocks = ShowCustomMessagesModal(modify, messages);
+            await modify.getUiController().openContextualBarView(contextualbarBlocks, { triggerId }, user);
         }
     }
-
     public async show_all_keywords(
         context: SlashCommandContext,
         read: IRead,
@@ -64,7 +74,6 @@ export class DefaultMessagesCommand implements ISlashCommand {
         messages: any,
         initial_text: string
     ) {
-        const triggerId = context.getTriggerId() as string; // [1]
         const user = context.getSender();
         const room = context.getRoom();
         // no message
