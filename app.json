@@ -1,6 +1,6 @@
 {
-    "id": "bb81a7c3-c50d-4c03-8897-bd2ffb934d47",
-    "version": "0.0.2",
+    "id": "bb81a7c3-c50d-4c03-8897-bd2ffb912d48",
+    "version": "0.0.3",
     "requiredApiVersion": "^1.19.0",
     "iconFile": "icon.png",
     "author": {
@@ -9,7 +9,7 @@
         "support": "https://github.com/dudanogueira/rocket.connect"
     },
     "name": "Rocket.Connect App",
-    "nameSlug": "rocketconnect-app",
+    "nameSlug": "rocketconnect",
     "classFile": "RocketConnectApp.ts",
     "description": "Companion App for Rocket.Connect",
     "implements": []

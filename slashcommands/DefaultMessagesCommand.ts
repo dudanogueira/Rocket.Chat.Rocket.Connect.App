@@ -12,7 +12,7 @@ import {
 } from "@rocket.chat/apps-engine/definition/slashcommands";
 import { ButtonStyle } from "@rocket.chat/apps-engine/definition/uikit";
 import { AppSetting } from "../config/Settings";
-import { RocketConnectAppApp } from "../RocketConnectApp";
+import { RocketConnectApp } from "../RocketConnectApp";
 import { ShowCustomMessagesModal } from "../ui/ShowCustomMessagesModal";
 export class DefaultMessagesCommand implements ISlashCommand {
 
@@ -21,7 +21,7 @@ export class DefaultMessagesCommand implements ISlashCommand {
     public i18nDescription = "RocketConnect_Description";
     public providesPreview = false;
 
-    constructor(private readonly app: RocketConnectAppApp) {}
+    constructor(private readonly app: RocketConnectApp) {}
 
     public async executor(
         context: SlashCommandContext,

@@ -10,11 +10,13 @@ import {
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { App } from "@rocket.chat/apps-engine/definition/App";
 import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
-import { UIKitBlockInteractionContext } from "@rocket.chat/apps-engine/definition/uikit";
-import { AppSetting, settings } from "./config/Settings";
+import { UIKitBlockInteractionContext, UIKitViewSubmitInteractionContext } from "@rocket.chat/apps-engine/definition/uikit";
+import { settings } from "./config/Settings";
 import { DefaultMessagesCommand } from "./slashcommands/DefaultMessagesCommand";
+import { ActiveChatCommand } from "./slashcommands/ActiveChatCommand";
+import { ViewSubmitHandler } from "./handlers/ViewSumitHandler";
 
-export class RocketConnectAppApp extends App {
+export class RocketConnectApp extends App {
     public appLogger: ILogger;
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
@@ -32,6 +34,9 @@ export class RocketConnectAppApp extends App {
         configuration.slashCommands.provideSlashCommand(
             new DefaultMessagesCommand(this)
         );
+        configuration.slashCommands.provideSlashCommand(
+            new ActiveChatCommand(this)
+        );        
         await Promise.all(
             settings.map((setting) =>
                 configuration.settings.provideSetting(setting)
@@ -74,5 +79,24 @@ export class RocketConnectAppApp extends App {
         return {
             success: false,
         };
+    }
+
+    public async executeViewSubmitHandler(
+        context: UIKitViewSubmitInteractionContext,
+        read: IRead,
+        http: IHttp,
+        persistence: IPersistence,
+        modify: IModify
+    ) {
+        // same for View SubmitHandler, moving to another Class
+        return new ViewSubmitHandler().executor(
+            this,
+            context,
+            read,
+            http,
+            persistence,
+            modify,
+            this.getLogger()
+        );
     }
 }
