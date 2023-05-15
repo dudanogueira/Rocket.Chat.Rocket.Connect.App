@@ -19,10 +19,10 @@ export function ShowActiveChatModal(
     modify: IModify,
     user: IUser,
     active_chat_data?: any,
+    viewId?: string,
     selected_number?: string
 ): IUIKitContextualBarViewParam {
     const blocks = modify.getCreator().getBlockBuilder();
-
     const destination_options = active_chat_data.destinations.map((item) => ({
         text: blocks.newPlainTextObject(item.text),
         value: item.value,
@@ -49,13 +49,18 @@ export function ShowActiveChatModal(
     }));
     var initial_connector = connector_options[0].value
 
+    var initial_number = ''
+    if(selected_number){
+        var initial_number = selected_number
+    }
+
     blocks.addInputBlock({
         blockId: "active_chat_data",
         optional: false,
         element: blocks.newPlainTextInputElement({
             placeholder: blocks.newPlainTextObject("Number"),
             actionId: "number_option",
-            // initialValue: [answer_initialValue],
+            initialValue: initial_number,
         }),
         label: blocks.newPlainTextObject("Number"),
     });
